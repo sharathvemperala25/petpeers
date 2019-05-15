@@ -1,6 +1,7 @@
 package com.example.petpeers.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.websocket.server.PathParam;
 
@@ -55,9 +56,9 @@ public class PetController {
 			return new ResponseEntity("you are not authorized user",HttpStatus.BAD_REQUEST);
 		}
 		
-		User user = userSerrvice.findByUserName(userName);
+		Optional<User> user = userSerrvice.findByUserName(userName);
 		
-		Pet pet = userSerrvice.buyPet(petId, user);
+		Pet pet = userSerrvice.buyPet(petId, user.get());
 		
 		return new ResponseEntity(pet.getOwner().getUserName()+" have purchased the pet with name"+pet.getName()+" successfully",HttpStatus.OK);
 		
@@ -72,8 +73,8 @@ public class PetController {
 			return new ResponseEntity("you are not authorized user",HttpStatus.BAD_REQUEST);
 		}
 		
-		User user = userSerrvice.findByUserName(userName);
-		List<Pet> pets = userSerrvice.getMyPets(user);
+		Optional<User> user = userSerrvice.findByUserName(userName);
+		List<Pet> pets = userSerrvice.getMyPets(user.get());
 		return new ResponseEntity(pets,HttpStatus.OK);
 	}
 	

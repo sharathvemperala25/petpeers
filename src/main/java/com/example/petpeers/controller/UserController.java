@@ -57,7 +57,6 @@ public final class UserController {
 		if(flag != 1) {
 			return new ResponseEntity("not an authorise User",HttpStatus.NOT_FOUND);
 		}
-		
 		List<Pet> pets = petService.getAllPets();
 		return new ResponseEntity(pets,HttpStatus.OK);
 	}

@@ -12,6 +12,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 @Entity
 @Table
 public class User {
@@ -21,10 +24,14 @@ public class User {
 	private Long id;
 	private String userName;
 	private String password;
+	
+	@Transient
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String confirmPassword;
 	//private Set roles;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="owner")
+	@JsonIgnore
 	private List<Pet> pets;
 	
 	
@@ -41,13 +48,14 @@ public class User {
 		this.userName = userName;
 	}
 	
-	@Transient
+	
 	public String getPassword() {
 		return password;
 	}
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
 	public String getConfirmPassword() {
 		return confirmPassword;
 	}

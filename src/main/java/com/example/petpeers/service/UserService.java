@@ -1,6 +1,7 @@
 package com.example.petpeers.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.example.petpeers.entity.Pet;
 import com.example.petpeers.entity.User;
@@ -11,7 +12,7 @@ public interface UserService {
 	
 	Long authenticate(String userName,String password);
 	
-	User findByUserName(String UserName);
+	Optional<User> findByUserName(String UserName);
 	
 	
 

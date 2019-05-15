@@ -24,17 +24,17 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean addUser(User user) {
-		boolean existUser = false;
+		//boolean existUser = false;
 		
-		Long count = userRepository.getUserByUserName(user.getUserName());
+		Optional<User> existUser = userRepository.findByUserName(user.getUserName());
 		
 		
-		if (count == 0) {
+		if (!existUser.isPresent()) {
 			userRepository.save(user);
-			existUser = true;
+			return true;
 		}
 		
-		return existUser;
+		return false;
 		// TODO Auto-generated method stub
 		
 	}
@@ -48,14 +48,15 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User findByUserName(String userName) {
+	public Optional<User> findByUserName(String userName) {
 		return userRepository.findByUserName(userName);
 		}
 
 	@Override
 	public Pet buyPet(Long petId, User user) {
 		
-	  Pet pet = petRepository.findById(petId).get();
+	  Optional<Pet> Optionalpet = petRepository.findById(petId);
+	  Pet pet = Optionalpet.get();
 	  pet.setOwner(user);
 	  
 		return petRepository.save(pet); 
@@ -67,8 +68,7 @@ public class UserServiceImpl implements UserService {
 		return user.getPets();
 	}
 	
-	
-	
+		
 	
 	
 	

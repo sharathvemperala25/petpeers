@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PetController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">petpeers</a> &gt; <a href="index.source.html" class="el_package">com.example.petpeers.controller</a> &gt; <span class="el_source">PetController.java</span></div><h1>PetController.java</h1><pre class="source lang-java linenums">package com.example.petpeers.controller;
+
+import java.util.List;
+import java.util.Optional;
+
+import javax.websocket.server.PathParam;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.petpeers.entity.Pet;
+import com.example.petpeers.entity.User;
+import com.example.petpeers.repository.PetRepository;
+import com.example.petpeers.repository.UserRepository;
+import com.example.petpeers.service.PetService;
+import com.example.petpeers.service.UserService;
+
+@RestController
+<span class="fc" id="L27">public class PetController {</span>
+	
+	@Autowired
+	PetService petService;
+	
+	@Autowired
+	UserService userSerrvice;
+
+	@PostMapping(&quot;/pets/addPet&quot;)
+	public ResponseEntity addPet(@RequestBody Pet pet) {
+<span class="nc" id="L37">		boolean flag = petService.savePet(pet);</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">		if(!flag) {</span>
+<span class="nc" id="L39">			return new ResponseEntity(&quot;age should be between 0 and 99&quot;,HttpStatus.BAD_REQUEST);</span>
+		}
+		
+<span class="nc" id="L42">		return new ResponseEntity(pet,HttpStatus.CREATED);</span>
+	}
+	
+	@GetMapping(&quot;/pets&quot;)
+	public List&lt;Pet&gt; petHome() {
+<span class="nc" id="L47">		return petService.getAllPets();</span>
+	}
+	
+	@PutMapping(&quot;/pets/buyPet/{petId}&quot;)
+	public ResponseEntity buyPet(@PathVariable Long petId,@RequestParam String userName,@RequestParam String password) {
+		
+<span class="nc" id="L53">		Long flag = userSerrvice.authenticate(userName, password);</span>
+		
+<span class="nc bnc" id="L55" title="All 2 branches missed.">		if(flag!=1) {</span>
+<span class="nc" id="L56">			return new ResponseEntity(&quot;you are not authorized user&quot;,HttpStatus.BAD_REQUEST);</span>
+		}
+		
+<span class="nc" id="L59">		Optional&lt;User&gt; user = userSerrvice.findByUserName(userName);</span>
+		
+<span class="nc" id="L61">		Pet pet = userSerrvice.buyPet(petId, user.get());</span>
+		
+<span class="nc" id="L63">		return new ResponseEntity(pet.getOwner().getUserName()+&quot; have purchased the pet with name&quot;+pet.getName()+&quot; successfully&quot;,HttpStatus.OK);</span>
+		
+	}
+	
+	
+	@GetMapping(&quot;/pets/myPets&quot;)
+	public ResponseEntity myPets(@RequestParam String userName,@RequestParam String password) {
+<span class="nc" id="L70">        Long flag = userSerrvice.authenticate(userName, password);</span>
+		
+<span class="nc bnc" id="L72" title="All 2 branches missed.">		if(flag!=1) {</span>
+<span class="nc" id="L73">			return new ResponseEntity(&quot;you are not authorized user&quot;,HttpStatus.BAD_REQUEST);</span>
+		}
+		
+<span class="nc" id="L76">		Optional&lt;User&gt; user = userSerrvice.findByUserName(userName);</span>
+<span class="nc" id="L77">		List&lt;Pet&gt; pets = userSerrvice.getMyPets(user.get());</span>
+<span class="nc" id="L78">		return new ResponseEntity(pets,HttpStatus.OK);</span>
+	}
+	
+	
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.0.201801022044</span></div></body></html>
